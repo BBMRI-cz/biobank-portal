@@ -1,5 +1,7 @@
 # Biobank Portal
 
+[![CI](https://github.com/BBMRI-cz/biobank-portal/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/BBMRI-cz/biobank-portal/actions/workflows/ci.yml)
+
 A web portal for managing sensitive data in biobanks of BBMRI.cz, the Czech node
 of BBMRI-ERIC. Each biobank runs in its own isolated instance on Kubernetes
 (CERIT-SC SensitiveCloud). The portal brings the biobank's tools together under
@@ -41,6 +43,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 cd backend
 mvn verify                 # build and run the tests
 mvn spring-boot:test-run   # run the app locally with a throwaway PostgreSQL
+mvn fmt:format             # format Java code
 ```
 
 ### Frontend

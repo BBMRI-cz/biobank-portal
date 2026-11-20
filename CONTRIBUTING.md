@@ -86,7 +86,7 @@ docs: describe Beam query flow
 - **Review:** at least one approving review is required before merging. The
   author does not approve their own PR. Resolve all review conversations
   before merging.
-- **CI:** all CI checks (build, tests, linting) must pass. Do not merge a red
+- **CI:** the `CI result` check (build, tests, linting, formatting) must pass. Do not merge a red
   build; fix it or ask for help.
 - Keep the branch up to date with `master` (rebase or merge) before merging.
 - Update documentation (`README.md`, `docs/`) when behaviour or setup changes.
