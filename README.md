@@ -14,7 +14,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 ## Tech stack
 
 - Backend: Java 25, Spring Boot 4.1.x
-- Frontend: Vue 3, Vite, TypeScript (planned)
+- Frontend: Vue 3, Vite, TypeScript, Vue Router, Pinia, PrimeVue
 - Database: PostgreSQL
 
 ## Repository layout
@@ -22,7 +22,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 | Folder      | Contents                                                        |
 |-------------|-----------------------------------------------------------------|
 | `backend/`  | Spring Boot REST API (Maven project)                            |
-| `frontend/` | Vue 3 web client (planned, currently empty)                     |
+| `frontend/` | Vue 3 web client                                                |
 | `deploy/`   | Kubernetes manifests and Kustomize overlays (planned)           |
 | `docs/`     | Architecture and design decisions                               |
 
@@ -33,7 +33,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 - Java 25
 - Maven 3.9+
 - Docker (Testcontainers starts PostgreSQL for tests and local runs)
-- Node.js LTS (for the frontend, once it exists)
+- Node.js 24 (see `.nvmrc`)
 
 ### Backend
 
@@ -45,7 +45,16 @@ mvn spring-boot:test-run   # run the app locally with a throwaway PostgreSQL
 
 ### Frontend
 
-Coming soon.
+```sh
+cd frontend
+cp .env.example .env.local   # then set the backend API address
+npm install
+npm run dev                  # dev server on http://localhost:5173
+npm test                     # unit tests (Vitest)
+npm run lint                 # ESLint + Oxlint
+npm run format               # Prettier
+npm run build                # type-check and production build
+```
 
 ### Deployment
 

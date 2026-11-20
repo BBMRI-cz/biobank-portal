@@ -60,6 +60,9 @@ pnpm-debug.log*
 .pnpm-store/
 .eslintcache
 .stylelintcache
+*.local
+__screenshots__/
+*.timestamp-*-*.mjs
 
 # ============================================================
 #  IDEs / editors
