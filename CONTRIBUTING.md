@@ -94,8 +94,10 @@ docs: describe Beam query flow
 
 ## Code style
 
-- Backend: follow the conventions of the existing code; add tests for new
-  behaviour (`mvn verify` must pass).
+- Backend: code is formatted with google-java-format via the
+  [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin). Run
+  `mvn fmt:format` in `backend/` before committing; `mvn fmt:check` verifies
+  it. Add tests for new behaviour (`mvn verify` must pass).
 - Frontend: conventions will be added once the stack is set up.
 
 ## Reporting bugs and requesting features
