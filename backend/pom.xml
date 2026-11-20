@@ -132,6 +132,11 @@
 				<artifactId>fmt-maven-plugin</artifactId>
 				<version>${fmt.plugin.version}</version>
 			</plugin>
+			<!-- Integration tests (*IT, e.g. with Testcontainers): mvn verify -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+			</plugin>
 		</plugins>
 	</build>
 
