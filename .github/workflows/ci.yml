@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -8,15 +8,18 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: read # needed by dorny/paths-filter on pull requests
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Finds out which parts of the repo changed, so backend jobs are skipped for
+  # frontend-only changes and vice versa. Filtering here (instead of with
+  # `on.<event>.paths`) keeps the required "CI Result" check always reporting.
   changes:
-    name: Detect changes
+    name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
@@ -36,10 +39,19 @@ jobs:
               - '.github/workflows/ci.yml'
 
   backend:
-    name: Backend
+    name: ${{ matrix.name }} (Backend)
     needs: changes
     if: needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Code Format
+            run: mvn -B -ntp fmt:check
+          # Unit (*Test) and integration (*IT) tests; Testcontainers uses the runner's Docker
+          - name: Unit & Integration Tests
+            run: mvn -B -ntp verify
     defaults:
       run:
         working-directory: backend
@@ -50,16 +62,27 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
-      - name: Check formatting
-        run: mvn -B -ntp fmt:check
-      - name: Build and test (Testcontainers uses the runner's Docker)
-        run: mvn -B -ntp verify
+      - run: ${{ matrix.run }}
 
   frontend:
-    name: Frontend
+    name: ${{ matrix.name }} (Frontend)
     needs: changes
     if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Lint
+            run: npm run lint:check
+          - name: Code Format
+            run: npm run format:check
+          - name: Type Check
+            run: npm run type-check
+          - name: Unit Tests
+            run: npm test
+          - name: Build
+            run: npm run build-only
     defaults:
       run:
         working-directory: frontend
@@ -71,17 +94,12 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      - name: Lint
-        run: npm run lint:check
-      - name: Check formatting
-        run: npm run format:check
-      - name: Unit tests
-        run: npm test
-      - name: Build
-        run: npm run build
+      - run: ${{ matrix.run }}
 
+  # Single check to require in branch protection. Passes when every job that
+  # had to run succeeded; jobs skipped by the path filter count as passed.
   ci-result:
-    name: CI result
+    name: CI Result
     if: always()
     needs: [changes, backend, frontend]
     runs-on: ubuntu-latest
