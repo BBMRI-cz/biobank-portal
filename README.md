@@ -63,6 +63,38 @@ npm run build                # type-check and production build
 
 Coming soon.
 
+## Container image
+
+The backend and frontend ship as one image, `ghcr.io/bbmri-cz/biobank-portal`.
+The [`Dockerfile`](Dockerfile) builds the Vue app, bundles it into the Spring
+Boot jar as static resources and runs it on a JRE as a non-root user
+(uid 1001) on port 8080. The backend serves the app, its client-side routes
+and the API (`/api`) from the same origin.
+
+The [CI/CD pipeline](.github/workflows/ci.yml) publishes the image on every
+push to `master` and on every release tag `vX.Y.Z`, after the tests pass
+(pull requests only build it). Tags are the full commit SHA, plus `X.Y.Z` for
+releases. `latest` is never published, so always deploy a specific tag. Base
+images are pinned by digest in the `Dockerfile`.
+
+Images are signed with Cosign (keyless); verify a signature with:
+
+```sh
+cosign verify ghcr.io/bbmri-cz/biobank-portal:<tag> \
+  --certificate-identity-regexp '^https://github.com/BBMRI-cz/biobank-portal/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+Build and run locally (from the repository root):
+
+```sh
+docker build -t biobank-portal:local .
+docker run --rm -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/portal \
+  -e SPRING_DATASOURCE_USERNAME=portal -e SPRING_DATASOURCE_PASSWORD=portal \
+  biobank-portal:local
+```
+
 ## Documentation
 
 Architecture and design decisions are in [`docs/`](docs/).
