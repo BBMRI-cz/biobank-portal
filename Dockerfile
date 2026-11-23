@@ -1,10 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_IMAGE=node:24.22.3-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
-ARG MAVEN_IMAGE=maven:3.10.0-eclipse-temurin-25-noble@sha256:e3760e0213ee8274e8b7926e5ecfcbabcbef93414c5561c4ecb657e435865329
-ARG JRE_IMAGE=eclipse-temurin:25.0.5.1_2-jre-noble@sha256:2ec98aa522c472deadfd2b7c5b39bca680e33ef522a53a72f10789bdf89a6bb5
-
-FROM ${NODE_IMAGE} AS frontend-build
+FROM node:24.22.3-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS frontend-build
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
@@ -14,7 +10,7 @@ COPY frontend/ ./
 ENV VITE_API_BASE_URL=/api
 RUN npm run build-only
 
-FROM ${MAVEN_IMAGE} AS backend-build
+FROM maven:3.10.0-eclipse-temurin-25-noble@sha256:e3760e0213ee8274e8b7926e5ecfcbabcbef93414c5561c4ecb657e435865329 AS backend-build
 WORKDIR /app/backend
 
 COPY backend/pom.xml ./
@@ -25,7 +21,7 @@ COPY --from=frontend-build /app/frontend/dist ./src/main/resources/static
 RUN mvn -B -ntp -q package -Dmaven.test.skip=true \
  && cp target/*.jar /app/app.jar
 
-FROM ${JRE_IMAGE}
+FROM eclipse-temurin:25.0.5.1_2-jre-noble@sha256:2ec98aa522c472deadfd2b7c5b39bca680e33ef522a53a72f10789bdf89a6bb5
 
 ARG VERSION=dev
 ARG REVISION=unknown
