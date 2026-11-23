@@ -1,0 +1,14 @@
+*
+!backend/pom.xml
+!backend/src/main/
+!frontend/
+
+frontend/node_modules
+frontend/dist
+frontend/coverage
+frontend/.vite
+frontend/.eslintcache
+frontend/**/*.tsbuildinfo
+frontend/.env
+frontend/.env.*
+frontend/.vscode
