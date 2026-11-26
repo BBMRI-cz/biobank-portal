@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readEnv } from '../env'
+import { readEnv } from './env'
 
 describe('readEnv', () => {
   it('reads the API base URL and strips trailing slashes', () => {

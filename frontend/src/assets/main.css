@@ -1,7 +1,0 @@
-@import 'tailwindcss';
-/* Tailwind utilities for PrimeVue theme tokens, e.g. bg-surface-50, text-primary */
-@import 'tailwindcss-primeui';
-
-body {
-  @apply m-0 bg-surface-50 text-color;
-}

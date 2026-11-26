@@ -1,29 +1,25 @@
-/** Settings served by the backend at GET {apiBaseUrl}/config. */
-export interface RuntimeConfig {
-  oidc: {
-    authority: string
-    clientId: string
-    scope: string
-  }
-}
+import { z } from 'zod'
 
-function requireString(value: unknown, field: string): string {
-  if (typeof value !== 'string' || value.trim() === '') {
-    throw new Error(`Invalid config from backend: "${field}" must be a non-empty string`)
-  }
-  return value
-}
+const nonEmpty = z.string().trim().min(1, 'must be a non-empty string')
 
-/** Validates the JSON returned by the backend. */
+export const runtimeConfigSchema = z.object({
+  oidc: z.object({
+    authority: nonEmpty,
+    clientId: nonEmpty,
+    scope: nonEmpty,
+  }),
+})
+
+export type RuntimeConfig = z.infer<typeof runtimeConfigSchema>
+
 export function parseRuntimeConfig(json: unknown): RuntimeConfig {
-  const oidc = (json as { oidc?: Record<string, unknown> } | null)?.oidc ?? {}
-  return {
-    oidc: {
-      authority: requireString(oidc.authority, 'oidc.authority'),
-      clientId: requireString(oidc.clientId, 'oidc.clientId'),
-      scope: requireString(oidc.scope, 'oidc.scope'),
-    },
+  const result = runtimeConfigSchema.safeParse(json)
+  if (!result.success) {
+    const issue = result.error.issues[0]
+    const field = issue?.path.join('.') || 'config'
+    throw new Error(`Invalid config from backend: "${field}" ${issue?.message ?? 'is invalid'}`)
   }
+  return result.data
 }
 
 export async function fetchRuntimeConfig(

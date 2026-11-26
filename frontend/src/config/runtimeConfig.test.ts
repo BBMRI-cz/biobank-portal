@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fetchRuntimeConfig, parseRuntimeConfig } from '../runtimeConfig'
+import { fetchRuntimeConfig, parseRuntimeConfig } from './runtimeConfig'
 
 const validConfig = {
   oidc: {

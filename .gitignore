@@ -86,10 +86,8 @@ out/
 /nbbuild/
 /nbdist/
 /.nb-gradle/
-# VS Code (keep shared settings if added deliberately)
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
+# VS Code
+.vscode/
 # Vim / Emacs
 *.swp
 *.swo

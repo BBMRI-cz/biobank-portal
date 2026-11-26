@@ -16,7 +16,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 ## Tech stack
 
 - Backend: Java 25, Spring Boot 4.1.x
-- Frontend: Vue 3, Vite, TypeScript, Vue Router, Pinia, PrimeVue
+- Frontend: React 19, Vite, TypeScript, React Router, TanStack Query, Zod, Tailwind CSS, shadcn/ui
 - Database: PostgreSQL
 
 ## Repository layout
@@ -24,7 +24,7 @@ Informatics, Masaryk University, in collaboration with BBMRI.cz.
 | Folder      | Contents                                                        |
 |-------------|-----------------------------------------------------------------|
 | `backend/`  | Spring Boot REST API (Maven project)                            |
-| `frontend/` | Vue 3 web client                                                |
+| `frontend/` | React web client                                                |
 | `deploy/`   | Kubernetes manifests and Kustomize overlays (planned)           |
 | `docs/`     | Architecture and design decisions                               |
 
@@ -66,7 +66,7 @@ Coming soon.
 ## Container image
 
 The backend and frontend ship as one image, `ghcr.io/bbmri-cz/biobank-portal`.
-The [`Dockerfile`](Dockerfile) builds the Vue app, bundles it into the Spring
+The [`Dockerfile`](Dockerfile) builds the React app, bundles it into the Spring
 Boot jar as static resources and runs it on a JRE as a non-root user
 (uid 1001) on port 8080. The backend serves the app, its client-side routes
 and the API (`/api`) from the same origin.
