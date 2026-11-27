@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:24.22.3-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS frontend-build
+FROM node:26.13.1-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS frontend-build
 WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
@@ -10,7 +10,7 @@ COPY frontend/ ./
 ENV VITE_API_BASE_URL=/api
 RUN npm run build-only
 
-FROM maven:3.10.0-eclipse-temurin-25-noble@sha256:e3760e0213ee8274e8b7926e5ecfcbabcbef93414c5561c4ecb657e435865329 AS backend-build
+FROM maven:3-eclipse-temurin-26-noble@sha256:69a6c37f0a91fca2c9d0cdd684c9c0ea7b1bc00d4196749c24440b2e02ad163d AS backend-build
 WORKDIR /app/backend
 
 COPY backend/pom.xml ./
@@ -21,7 +21,7 @@ COPY --from=frontend-build /app/frontend/dist ./src/main/resources/static
 RUN mvn -B -ntp -q package -Dmaven.test.skip=true \
  && cp target/*.jar /app/app.jar
 
-FROM eclipse-temurin:25.0.5.1_2-jre-noble@sha256:2ec98aa522c472deadfd2b7c5b39bca680e33ef522a53a72f10789bdf89a6bb5
+FROM eclipse-temurin:26.0.2.1_1-jre-noble@sha256:adfd44c114916dc79fa9a24087fbac34252096edb9892d1c2d9d82db3f8947b3
 
 ARG VERSION=dev
 ARG REVISION=unknown
